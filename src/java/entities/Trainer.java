@@ -64,6 +64,12 @@ public class Trainer implements Serializable {
         this.name = name;
     }
 
+    public Trainer(String name, int pokeballs, int potions) {
+        this.name = name;
+        this.pokeballs = pokeballs;
+        this.potions = potions;
+    }
+
     public Trainer(String name, int pokeballs, int potions, int points) {
         this.name = name;
         this.pokeballs = pokeballs;

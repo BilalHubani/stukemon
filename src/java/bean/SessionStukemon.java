@@ -5,7 +5,9 @@
  */
 package bean;
 
+import entities.Trainer;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
@@ -17,8 +19,17 @@ import javax.persistence.PersistenceUnit;
 public class SessionStukemon {
     @PersistenceUnit EntityManagerFactory emf;
     
-    public boolean insertTrainer(){
+    public boolean insertTrainer(Trainer t){
+        if (!trainerExists(t)) {
+            EntityManager em = emf.createEntityManager();
+            em.persist(t);
+            em.close();
+            return true;
+        }
         return false;
+    }
+    public boolean trainerExists(Trainer t){
+        return (emf.createEntityManager().find(Trainer.class, t.getName())) != null;
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")

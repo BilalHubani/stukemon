@@ -5,27 +5,22 @@
  */
 package servlets;
 
-import bean.SessionStukemon;
+import entities.Pokemon;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import entities.Trainer;
-import javax.ejb.EJB;
 
 /**
  *
  * @author dam
  */
-@WebServlet(name = "NewStukemonTrainer", urlPatterns = {"/NewStukemonTrainer"})
-public class NewStukemonTrainer extends HttpServlet {
+@WebServlet(name = "NewStukemon", urlPatterns = {"/NewStukemon"})
+public class NewStukemon extends HttpServlet {
 
-    @EJB
-    SessionStukemon ejb;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -43,17 +38,22 @@ public class NewStukemonTrainer extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>NewStukemonTrainer</title>");            
+            out.println("<title>Servlet NewStukemon</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>New Stukemon Trainer</h1>");
+            out.println("<h1>Servlet NewStukemon at " + request.getContextPath() + "</h1>");
             // Comprobamos si han pulsado el botón
             if ("Guardar".equals(request.getParameter("alta"))) {
-                // Tenemos que crear el trainer
+                // Tenemos que crear el stukemon
+                //String name, String type, String ability, int attack, int defense, int speed, int life, int level
                 String name = request.getParameter("name");
-                int pokeballs = Integer.parseInt(request.getParameter("pokeballs"));
-                int potions = Integer.parseInt(request.getParameter("potions"));
-                Trainer trainer = new Trainer(name, pokeballs, potions, 0);
+                String type = request.getParameter("type");
+                String ability = request.getParameter("ability");
+                int attack = Integer.parseInt(request.getParameter("attack"));
+                int defense = Integer.parseInt(request.getParameter("defense"));
+                int speed = Integer.parseInt(request.getParameter("speed"));
+                int life = Integer.parseInt(request.getParameter("life"));
+                Pokemon trainer = new Pokemon(name, type, ability, attack, defense, speed, life, 0);
 
                 if (ejb.insertTrainer(trainer)) {
                     out.println("<p>Stukemon trainer dado de alta</p>");
