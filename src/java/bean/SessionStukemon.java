@@ -5,6 +5,7 @@
  */
 package bean;
 
+import entities.Pokemon;
 import entities.Trainer;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -30,6 +31,24 @@ public class SessionStukemon {
     }
     public boolean trainerExists(Trainer t){
         return (emf.createEntityManager().find(Trainer.class, t.getName())) != null;
+    }
+    
+    public boolean insertStukemon(Pokemon p){
+        if (!stukemonExists(p)) {
+            EntityManager em = emf.createEntityManager();
+            em.persist(p);
+            em.close();
+            return true;
+        }
+        return false;
+    }
+    public boolean stukemonExists(Pokemon p){
+        return (emf.createEntityManager().find(Pokemon.class, p.getName())) != null;
+    }
+    
+    public boolean deleteStukemon(Pokemon p){
+        
+        return true;
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
