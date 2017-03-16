@@ -5,8 +5,13 @@
  */
 package servlets;
 
+import bean.SessionStukemon;
+import entities.Trainer;
+import entities.Battle;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,7 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "BattleRanking", urlPatterns = {"/BattleRanking"})
 public class BattleRanking extends HttpServlet {
-
+@EJB
+    SessionStukemon ejb;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,10 +43,23 @@ public class BattleRanking extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet BattleRanking</title>");            
+            out.println("<title>BattleRanking</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet BattleRanking at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Battle Ranking</h1>");
+            out.println("<table border = 1>");
+            out.println("<tr><td>Stukemon</td><td>Wins</td></tr>");
+                // Leemos las battles de la base de datos
+                List<String> battles = ejb.selectAllBattlesOrdered();
+                out.println(battles.get(0).toString());
+//                for (String b : battles) {
+//                    out.println("<tr><td>" + b.getName() + "</td><td>" + t.getPokeballs()+ "</td><td>" + t.getPotions()+ "</td><td>" + t.getPoints()+ "</td></tr>");                    
+//                }
+                out.println("</table><br>");
+            out.println("<br>");
+            out.println("<form action=\"index.html\">");
+                out.println("<input type=\"submit\" value=\"Main menu\">");
+                out.println("</form>");
             out.println("</body>");
             out.println("</html>");
         }

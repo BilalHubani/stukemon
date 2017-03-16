@@ -5,12 +5,16 @@
  */
 package bean;
 
+import entities.Battle;
 import entities.Pokemon;
 import entities.Trainer;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
+import javax.persistence.Query;
 
 /**
  *
@@ -31,8 +35,14 @@ public class SessionStukemon {
     }
     public boolean trainerExists(Trainer t){
         return (emf.createEntityManager().find(Trainer.class, t.getName())) != null;
+    }  
+    public Trainer getTrainerByName(String s){
+        return emf.createEntityManager().find(Trainer.class, s);
     }
-    
+    public List<Trainer> selectAllTrainers(){
+        return emf.createEntityManager().createNamedQuery("Trainer.findAll").getResultList();
+        
+    }
     public boolean insertStukemon(Pokemon p){
         if (!stukemonExists(p)) {
             EntityManager em = emf.createEntityManager();
@@ -47,8 +57,38 @@ public class SessionStukemon {
     }
     
     public boolean deleteStukemon(Pokemon p){
-        
-        return true;
+        EntityManager em = emf.createEntityManager();
+        Pokemon poke = em.find(Pokemon.class, p.getName());
+        boolean ok = false;
+        if (poke != null) {
+            em.remove(poke);
+            ok = true;
+        } 
+        em.close();
+        return ok;        
+    }
+    
+    public List<Pokemon> selectAllStukemons(){
+        return emf.createEntityManager().createNamedQuery("Pokemon.findAll").getResultList();        
+    }
+    public List<Pokemon> selectAllStukemonsOrdered(){
+        return emf.createEntityManager().createQuery("Select p from Pokemon p order by p.level desc, p.life desc").getResultList();        
+    }
+    public List<Trainer> selectAllTrainersOrdered(){
+        return emf.createEntityManager().createQuery("Select t from Trainer t order by t.points desc").getResultList();        
+    }
+    public List<String> selectAllBattlesOrdered(){
+        EntityManager em = emf.createEntityManager();
+        Query q = em.createQuery("Select b.winner, Count(b) from Battle b group by b.winner");
+        List<Object[]> list = q.getResultList();
+        List<String> stringList = new ArrayList<String>();
+        for (int i = 0; i<list.size();i++) {            
+            stringList.add(list.get(i)[0].toString());
+        }
+        return stringList;        
+    }
+    public Pokemon getStukemonByName(String s){
+        return emf.createEntityManager().find(Pokemon.class, s);
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")

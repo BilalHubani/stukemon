@@ -5,9 +5,13 @@
  */
 package servlets;
 
+import bean.SessionStukemon;
 import entities.Pokemon;
+import entities.Trainer;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -20,7 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "NewStukemon", urlPatterns = {"/NewStukemon"})
 public class NewStukemon extends HttpServlet {
-
+@EJB
+    SessionStukemon ejb;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -38,10 +43,10 @@ public class NewStukemon extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet NewStukemon</title>");            
+            out.println("<title>NewStukemon</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet NewStukemon at " + request.getContextPath() + "</h1>");
+            out.println("<h1>New Stukemon</h1>");
             // Comprobamos si han pulsado el botón
             if ("Guardar".equals(request.getParameter("alta"))) {
                 // Tenemos que crear el stukemon
@@ -53,19 +58,34 @@ public class NewStukemon extends HttpServlet {
                 int defense = Integer.parseInt(request.getParameter("defense"));
                 int speed = Integer.parseInt(request.getParameter("speed"));
                 int life = Integer.parseInt(request.getParameter("life"));
-                Pokemon trainer = new Pokemon(name, type, ability, attack, defense, speed, life, 0);
-
-                if (ejb.insertTrainer(trainer)) {
-                    out.println("<p>Stukemon trainer dado de alta</p>");
+                String trainer = request.getParameter("trainer");
+                Pokemon stukemon = new Pokemon(name, type, ability, attack, defense, speed, life, 0);
+                Trainer tr = ejb.getTrainerByName(trainer);
+                stukemon.setTrainer(tr);
+                if (ejb.insertStukemon(stukemon)) {
+                    out.println("<p>Stukemon dado de alta</p>");
                 } else {
-                    out.println("<p>Ya existe un Stukemon trainer con este nombre</p>");
+                    out.println("<p>Ya existe un Stukemon con este nombre</p>");
                 }
             } else {
                 // Creamos el formulario de alta de un trainer
                 out.println("<form method=\"POST\">");
-                out.println("Name: <input type=\"text\" name=\"name\" required>");
-                out.println("N. Pokeballs: <input type=\"number\" name=\"pokeballs\" required>");
-                out.println("N. Potions: <input type=\"number\" name=\"potions\" required>");
+                out.println("Name: <input type=\"text\" name=\"name\" required><br>");
+                out.println("Type: <input type=\"text\" name=\"type\" required><br>");
+                out.println("Ability: <input type=\"text\" name=\"ability\" required><br>");
+                out.println("Attack: <input type=\"number\" name=\"attack\" required><br>");
+                out.println("Defense: <input type=\"number\" name=\"defense\" required><br>");
+                out.println("Speed: <input type=\"number\" name=\"speed\" required><br>");
+                out.println("Life: <input type=\"number\" name=\"life\" required><br>");
+                out.println("Trainer: <select name=\"trainer\">");
+                // Leemos los trainers de la base de datos
+                List<Trainer> trainers = ejb.selectAllTrainers();
+                for (Trainer t : trainers) {
+                    if(t.getPokemonCollection().size() <6){
+                    out.println("<option>" + t.getName() + "</option>");
+                    }
+                }
+                out.println("</select><br>");
                 out.println("<input type=\"submit\" name=\"alta\" value=\"Guardar\">");
                 out.println("</form>");
             }

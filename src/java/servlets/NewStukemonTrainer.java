@@ -63,9 +63,9 @@ public class NewStukemonTrainer extends HttpServlet {
             } else {
                 // Creamos el formulario de alta de un trainer
                 out.println("<form method=\"POST\">");
-                out.println("Name: <input type=\"text\" name=\"name\" required>");
-                out.println("N. Pokeballs: <input type=\"number\" name=\"pokeballs\" required>");
-                out.println("N. Potions: <input type=\"number\" name=\"potions\" required>");
+                out.println("Name: <input type=\"text\" name=\"name\" required><br>");
+                out.println("N. Pokeballs: <input type=\"number\" name=\"pokeballs\" required><br>");
+                out.println("N. Potions: <input type=\"number\" name=\"potions\" required><br>");
                 out.println("<input type=\"submit\" name=\"alta\" value=\"Guardar\">");
                 out.println("</form>");
             }

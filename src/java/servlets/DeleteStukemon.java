@@ -5,8 +5,13 @@
  */
 package servlets;
 
+import bean.SessionStukemon;
+import entities.Pokemon;
+import entities.Trainer;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,7 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "DeleteStukemon", urlPatterns = {"/DeleteStukemon"})
 public class DeleteStukemon extends HttpServlet {
-
+@EJB
+    SessionStukemon ejb;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,12 +43,36 @@ public class DeleteStukemon extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet DeleteStukemon</title>");            
+            out.println("<title>DeleteStukemon</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet DeleteStukemon at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Delete Stukemon</h1>");
+            // Comprobamos si han pulsado el botón
+            if ("Borrar".equals(request.getParameter("alta"))) {
+                String stuke = request.getParameter("stukemon");
+                Pokemon st = ejb.getStukemonByName(stuke);
+                if (ejb.deleteStukemon(st)) {
+                    out.println("<p>Stukemon borrado del mapa</p>");
+                } else {
+                    out.println("<p>No se ha podido borrar</p>");
+                }
+            } else {
+                out.println("<form method=\"POST\">");
+                out.println("Stukemons: <select name=\"stukemon\">");
+                List<Pokemon> stukemons = ejb.selectAllStukemons();
+                for (Pokemon p : stukemons) {
+                    out.println("<option>" + p.getName() + "</option>");                    
+                }
+                out.println("</select><br>");
+                out.println("<input type=\"submit\" name=\"alta\" value=\"Borrar\">");
+                out.println("</form>");
+            }
+            out.println("<br>");
+            out.println("<form action=\"index.html\">");
+                out.println("<input type=\"submit\" value=\"Main menu\">");
+                out.println("</form>");
             out.println("</body>");
-            out.println("</html>");
+            out.println("</html>");        
         }
     }
 

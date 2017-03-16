@@ -5,8 +5,13 @@
  */
 package servlets;
 
+import bean.SessionStukemon;
+import entities.Pokemon;
+import entities.Trainer;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,7 +24,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "StukemonList", urlPatterns = {"/StukemonList"})
 public class StukemonList extends HttpServlet {
-
+@EJB
+    SessionStukemon ejb;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -37,10 +43,23 @@ public class StukemonList extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet StukemonList</title>");            
+            out.println("<title>StukemonList</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet StukemonList at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Stukemon List</h1>");
+            out.println("<table border = 1>");
+            out.println("<tr><td>Name</td><td>Type</td><td>Ability</td><td>Attack</td><td>Defense</td><td>Speed</td><td>Life</td><td>Level</td><td>Trainer</td></tr>");
+                // Leemos los stukemons de la base de datos
+                List<Pokemon> pokes = ejb.selectAllStukemonsOrdered();
+                for (Pokemon p : pokes) {
+                    //String name, String type, String ability, int attack, int defense, int speed, int life, int level, trainer
+                    out.println("<tr><td>" + p.getName() + "</td><td>" + p.getType() + "</td><td>" + p.getAbility()+ "</td><td>" + p.getAttack()+ "</td><td>" + p.getDefense()+ "</td><td>" + p.getSpeed()+ "</td><td>" + p.getLife()+ "</td><td>" + p.getLevel()+ "</td><td>" + p.getTrainer().getName()+ "</td></tr>");                    
+                }
+                out.println("</table><br>");
+            out.println("<br>");
+            out.println("<form action=\"index.html\">");
+                out.println("<input type=\"submit\" value=\"Main menu\">");
+                out.println("</form>");
             out.println("</body>");
             out.println("</html>");
         }
