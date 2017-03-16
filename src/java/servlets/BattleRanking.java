@@ -51,10 +51,9 @@ public class BattleRanking extends HttpServlet {
             out.println("<tr><td>Stukemon</td><td>Wins</td></tr>");
                 // Leemos las battles de la base de datos
                 List<String> battles = ejb.selectAllBattlesOrdered();
-                out.println(battles.get(0).toString());
-//                for (String b : battles) {
-//                    out.println("<tr><td>" + b.getName() + "</td><td>" + t.getPokeballs()+ "</td><td>" + t.getPotions()+ "</td><td>" + t.getPoints()+ "</td></tr>");                    
-//                }
+                for(int i = 0;i<battles.size();i=i+2){
+                    out.println("<tr><td>" + battles.get(i) + "</td><td>" + battles.get(i+1)+ "</td></tr>");
+                }
                 out.println("</table><br>");
             out.println("<br>");
             out.println("<form action=\"index.html\">");

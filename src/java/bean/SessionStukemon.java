@@ -82,8 +82,11 @@ public class SessionStukemon {
         Query q = em.createQuery("Select b.winner, Count(b) from Battle b group by b.winner");
         List<Object[]> list = q.getResultList();
         List<String> stringList = new ArrayList<String>();
-        for (int i = 0; i<list.size();i++) {            
-            stringList.add(list.get(i)[0].toString());
+        for (int i = 0; i<list.size();i++) {
+            String s = list.get(i)[0].toString().split("=")[1];
+            s = s.split("]")[0];
+            stringList.add(s);
+            stringList.add(list.get(i)[1].toString());
         }
         return stringList;        
     }
