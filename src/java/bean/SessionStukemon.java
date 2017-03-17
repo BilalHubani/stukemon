@@ -114,7 +114,7 @@ public class SessionStukemon {
         Pokemon poke = em.find(Pokemon.class, p.getName());
         boolean ok = false;
         if (tr != null && p != null && tr.getPotions()>0) {
-            tr.setPotions(t.getPotions()-1); 
+            tr.setPotions(tr.getPotions()-1); 
             poke.setLife(poke.getLife()+50);
             em.persist(tr);
             em.persist(poke);
@@ -122,6 +122,58 @@ public class SessionStukemon {
             ok = true;
         }
          return ok;
+    }
+    public void battleWinners(Pokemon p, Trainer t){
+        EntityManager em = emf.createEntityManager();
+        Trainer tr = em.find(Trainer.class, t.getName());
+        Pokemon poke = em.find(Pokemon.class, p.getName());
+        boolean ok = false;
+        if (tr != null && p != null) {
+            tr.setPoints(tr.getPoints()+10); 
+            poke.setLevel(poke.getLevel()+1);
+            em.persist(tr);
+            em.persist(poke);
+            em.close();
+            ok = true;
+        }
+    }
+    public void battleLosers(Pokemon p, Trainer t){
+        EntityManager em = emf.createEntityManager();
+        Trainer tr = em.find(Trainer.class, t.getName());
+        Pokemon poke = em.find(Pokemon.class, p.getName());
+        boolean ok = false;
+        if (tr != null && p != null) {
+            tr.setPoints(tr.getPoints()+1); 
+            poke.setLife(p.getLife());
+            em.persist(tr);
+            em.persist(poke);
+            em.close();
+            ok = true;
+        }
+    }
+    public void draw(Pokemon p, Pokemon p2){
+        EntityManager em = emf.createEntityManager();
+        Pokemon poke2 = em.find(Pokemon.class, p2.getName());
+        Pokemon poke = em.find(Pokemon.class, p.getName());
+        boolean ok = false;
+        if (p2 != null && p != null) {
+            poke2.setLife(p2.getLife());
+            poke.setLife(p.getLife());
+            em.persist(poke2);
+            em.persist(poke);
+            em.close();
+            ok = true;
+        }
+    }
+    public void recordBattle(Pokemon p, Pokemon p2, Pokemon winner){
+        EntityManager em = emf.createEntityManager();
+        Battle battle = new Battle();
+        battle.setPokemon1(p.getName());
+        battle.setPokemon2(p2.getName());        
+        battle.setWinner(winner.getName());
+            
+            em.persist(battle);
+            em.close();
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")

@@ -57,10 +57,9 @@ public class Battle extends HttpServlet {
                 Trainer tr2 = ejb.getTrainerByName(trainer2);
                 Pokemon poke = ejb.getStukemonByName(stukemon);
                 Pokemon poke2 = ejb.getStukemonByName(stukemon2);
+                // true gana poke, false gana poke2
                 boolean winner = true;
-                if (poke.getSpeed()>poke2.getSpeed()) {
-                    // true gana poke, false gana poke2
-                    
+                if (poke.getSpeed()>poke2.getSpeed()) {  
                     int attack = poke.getAttack()+(2*poke.getLevel() - (poke2.getDefense()/3));
                     poke2.setLife(poke2.getLife()-attack);
                     if(poke2.getLife()<0)
@@ -79,16 +78,60 @@ public class Battle extends HttpServlet {
                         poke.setLife(poke.getLife()-attack2);
                         if(poke.getLife()<0)
                             poke.setLife(0);
+                        if(poke.getLife()==0){
+                        winner = false;
+                    }else{
+                        int attack = poke.getAttack()+(2*poke.getLevel() - (poke2.getDefense()/3));
+                        poke2.setLife(poke2.getLife()-attack);
+                        if(poke2.getLife()<0)
+                            poke2.setLife(0);
+                    }
                 }else{
+                    int rng =(int) (Math.random()*2);
+                    if (rng ==0 ){
+                        int attack = poke.getAttack()+(2*poke.getLevel() - (poke2.getDefense()/3));
+                    poke2.setLife(poke2.getLife()-attack);
+                    if(poke2.getLife()<0)
+                        poke2.setLife(0);
+                    if(poke2.getLife()==0){
+                        winner = true;
+                    }else{
+                        int attack2 = poke2.getAttack()+(2*poke2.getLevel() - (poke.getDefense()/3));
+                        poke.setLife(poke.getLife()-attack2);
+                        if(poke.getLife()<0)
+                            poke.setLife(0);                        
+                    }
+                    }else{
+                        int attack2 = poke2.getAttack()+(2*poke2.getLevel() - (poke.getDefense()/3));
+                        poke.setLife(poke.getLife()-attack2);
+                        if(poke.getLife()<0)
+                            poke.setLife(0);
+                        if(poke.getLife()==0){
+                        winner = false;
+                    }else{
+                        int attack = poke.getAttack()+(2*poke.getLevel() - (poke2.getDefense()/3));
+                        poke2.setLife(poke2.getLife()-attack);
+                        if(poke2.getLife()<0)
+                            poke2.setLife(0);
+                    }
+                    }
                     
                 }
                 out.println("<h3>Vida de "+poke.getName()+" "+poke.getLife()+"</h3>");
                 out.println("<h3>Vida de "+poke2.getName()+" "+poke2.getLife()+"</h3>");
-                if(winner){
+                if(poke.getLife()>poke2.getLife()){
+                    battleWinners(poke, tr);
+                    battleLosers(poke2, tr2);
                     out.println("<h3>Gana "+trainer+"</h3>");
-                }else{
-                    out.println("<h3>Gana "+trainer2+"</h3>");
+                    recordBattle(poke,poke2,poke);
                 }
+                else if(poke.getLife()<poke2.getLife()){
+                    battleWinners(poke2, tr2);
+                    battleLosers(poke, tr);
+                    out.println("<h3>Gana "+trainer2+"</h3>");
+                }else  draw(poke, poke2);
+                    
+                
             }else if ("Select".equals(request.getParameter("alta3"))) {
                 String trainer = request.getParameter("trainer1");
                 String trainer2 = request.getParameter("trainer2");
