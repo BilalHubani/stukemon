@@ -9,6 +9,7 @@ import entities.Battle;
 import entities.Pokemon;
 import entities.Trainer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -79,7 +80,7 @@ public class SessionStukemon {
     }
     public List<String> selectAllBattlesOrdered(){
         EntityManager em = emf.createEntityManager();
-        Query q = em.createQuery("Select b.winner, Count(b) from Battle b group by b.winner");
+        Query q = em.createQuery("Select b.winner, Count(b) from Battle b group by b.winner ");
         List<Object[]> list = q.getResultList();
         List<String> stringList = new ArrayList<String>();
         for (int i = 0; i<list.size();i++) {
@@ -92,6 +93,35 @@ public class SessionStukemon {
     }
     public Pokemon getStukemonByName(String s){
         return emf.createEntityManager().find(Pokemon.class, s);
+    }
+    
+    public boolean setTrainerPotions(Trainer t, int p){
+        EntityManager em = emf.createEntityManager();
+        Trainer tr = em.find(Trainer.class, t.getName());
+        boolean ok = false;
+        if (tr != null && p*10 < tr.getPoints()) {
+            tr.setPotions(t.getPotions()+p);
+            tr.setPoints(t.getPoints()-p*10);            
+            em.persist(tr);
+            em.close();
+            ok = true;
+        }
+         return ok;
+    }
+    public boolean lvlUpLife(Trainer t, Pokemon p){
+        EntityManager em = emf.createEntityManager();
+        Trainer tr = em.find(Trainer.class, t.getName());
+        Pokemon poke = em.find(Pokemon.class, p.getName());
+        boolean ok = false;
+        if (tr != null && p != null && tr.getPotions()>0) {
+            tr.setPotions(t.getPotions()-1); 
+            poke.setLife(poke.getLife()+50);
+            em.persist(tr);
+            em.persist(poke);
+            em.close();
+            ok = true;
+        }
+         return ok;
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
